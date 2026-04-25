@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="facebook-domain-verification" content="v4qsdxo6evpi82it6h96yuzfs26ktj" />
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1273735678279363');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1273735678279363&ev=PageView&noscript=1"/></noscript>
+<!-- /Meta Pixel -->
 <title>ALO Univers - Athleisure Premium Femme | Alo Yoga France</title>
 <meta name="description" content="Revendeur Alo Yoga en France. Leggings, brassières, pantalons Suit Up, tennis. Livraison offerte dès 99EUR. 100% authentique.">
 <meta name="theme-color" content="#F8F7F4">
@@ -1594,6 +1602,17 @@ function openPDP(idx) {
   currentPDPColor = p.colors[0].name;
   currentPDPSize = 'S';
 
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'ViewContent', {
+      content_ids: [String(idx)],
+      content_name: p.title,
+      content_type: 'product',
+      content_category: p.cat,
+      value: parseFloat(p.colors[0].price),
+      currency: 'EUR'
+    });
+  }
+
   // Find match
   var isTop = TOPS.indexOf(p.cat) !== -1;
   var isBottom = BOTTOMS.indexOf(p.cat) !== -1 && p.cat !== 'robe';
@@ -2182,6 +2201,17 @@ function addToCart() {
   };
   cart.push(item);
 
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'AddToCart', {
+      content_ids: [String(currentPDPIdx)],
+      content_name: p.title,
+      content_type: 'product',
+      content_category: p.cat,
+      value: item.price,
+      currency: 'EUR'
+    });
+  }
+
   // If cross-sell selected, add it too
   if (selectedCrossSell) {
     var cs = selectedCrossSell;
@@ -2449,6 +2479,19 @@ function closeCart() {
 
 function checkout() {
   if (cart.length === 0) return;
+
+  if (typeof fbq !== 'undefined') {
+    var paidItems = cart.filter(function(i){ return !i.isGift; });
+    var totalValue = paidItems.reduce(function(s, i){ return s + (parseFloat(i.price) || 0); }, 0);
+    fbq('track', 'InitiateCheckout', {
+      content_ids: paidItems.map(function(i){ return i.title; }),
+      content_type: 'product',
+      num_items: paidItems.length,
+      value: totalValue,
+      currency: 'EUR'
+    });
+  }
+
   alert('Commande de ' + cart.length + ' article(s) pour ' + document.getElementById('cartTotal').textContent + '\\nRedirection vers le paiement...');
 }
 
